@@ -1,0 +1,47 @@
+{
+"address": "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4",
+"abi": [
+{
+"inputs": [
+{ "internalType": "string", "name": "_id", "type": "string" },
+{ "internalType": "string", "name": "_name", "type": "string" },
+{ "internalType": "string", "name": "_manufacturer", "type": "string" }
+],
+"name": "addMedicine",
+"outputs": [],
+"stateMutability": "nonpayable",
+"type": "function"
+},
+{
+"inputs": [
+{ "internalType": "string", "name": "_id", "type": "string" },
+{ "internalType": "string", "name": "_status", "type": "string" },
+{ "internalType": "string", "name": "_location", "type": "string" }
+],
+"name": "updateStatus",
+"outputs": [],
+"stateMutability": "nonpayable",
+"type": "function"
+},
+{
+"inputs": [
+{ "internalType": "string", "name": "_id", "type": "string" }
+],
+"name": "getHistory",
+"outputs": [
+{
+"components": [
+{ "internalType": "string", "name": "status", "type": "string" },
+{ "internalType": "string", "name": "location", "type": "string" },
+{ "internalType": "uint256", "name": "timestamp", "type": "uint256" }
+],
+"internalType": "struct MedicineTracking.Status[]",
+"name": "",
+"type": "tuple[]"
+}
+],
+"stateMutability": "view",
+"type": "function"
+}
+]
+}
