@@ -1,33 +1,70 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-function UpdateStatus({ token }) {
+function UpdateStatus() {
   const [id, setId] = useState("");
-  const [status, setStatus] = useState("Packed");
+  const [status, setStatus] = useState("Order Placed");
   const [location, setLocation] = useState("");
+  const [history, setHistory] = useState([]);
 
-  const updateStatus = async () => {
-    if (!id || !location) {
-      alert("Fill all fields ❌");
-      return;
-    }
+  const flow = [
+    "Order Placed",
+    "Packed",
+    "Shipped",
+    "Out for Delivery",
+    "Delivered"
+  ];
 
+  // 🔥 Fetch history when ID changes
+  useEffect(() => {
+    const fetchHistory = async () => {
+      if (!id) return;
+
+      try {
+        const res = await axios.get(
+          `http://localhost:3000/track/${id}`
+        );
+        setHistory(res.data);
+      } catch {
+        setHistory([]);
+      }
+    };
+
+    fetchHistory();
+  }, [id]);
+
+  // 🔥 Get next valid step
+  const getNextStep = () => {
+    if (history.length === 0) return "Order Placed";
+
+    const lastStatus = history[history.length - 1].status;
+    const index = flow.indexOf(lastStatus);
+
+    return flow[index + 1];
+  };
+
+  const handleUpdate = async () => {
     try {
-      await axios.post(
-        "http://localhost:3000/updateStatus",
-        { id, status, location },
-        { headers: { Authorization: token } }
-      );
+      await axios.post("http://localhost:3000/updateStatus", {
+        id,
+        status,
+        location,
+      });
 
       alert("Status updated ✅");
 
-      setId("");
-      setLocation("");
+      // Refresh history
+      const res = await axios.get(
+        `http://localhost:3000/track/${id}`
+      );
+      setHistory(res.data);
 
     } catch (err) {
       alert(err.response?.data || "Error ❌");
     }
   };
+
+  const nextStep = getNextStep();
 
   return (
     <div className="card">
@@ -39,13 +76,21 @@ function UpdateStatus({ token }) {
         onChange={(e) => setId(e.target.value)}
       />
 
-      <select onChange={e => setStatus(e.target.value)}>
-        <option>Order Placed</option>
-        <option>Packed</option>
-        <option>Shipped</option>
-        <option>Out for Delivery</option>
-        <option>Delivered</option>
-    </select>
+      {/* 🔥 SMART DROPDOWN */}
+      <select
+        value={status}
+        onChange={(e) => setStatus(e.target.value)}
+      >
+        {flow.map((step) => (
+          <option
+            key={step}
+            value={step}
+            disabled={step !== nextStep} // 🔥 ONLY ALLOW NEXT STEP
+          >
+            {step}
+          </option>
+        ))}
+      </select>
 
       <input
         placeholder="Location"
@@ -53,7 +98,16 @@ function UpdateStatus({ token }) {
         onChange={(e) => setLocation(e.target.value)}
       />
 
-      <button onClick={updateStatus}>Update Status 🚀</button>
+      <button onClick={handleUpdate}>
+        Update Status 🚀
+      </button>
+
+      {/* 🔥 SHOW CURRENT STEP */}
+      {history.length > 0 && (
+        <p style={{ marginTop: "10px", opacity: 0.7 }}>
+          Current: {history[history.length - 1].status}
+        </p>
+      )}
     </div>
   );
 }
