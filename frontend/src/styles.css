@@ -1,0 +1,219 @@
+/* GLOBAL THEMES */
+body.dark {
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  color: white;
+}
+
+body.light {
+  background: #f5f7fa;
+  color: #111;
+}
+
+/* CARD */
+.card {
+  padding: 25px;
+  border-radius: 16px;
+  margin-top: 20px;
+  transition: 0.3s;
+}
+
+/* DARK CARD */
+body.dark .card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* LIGHT CARD */
+body.light .card {
+  background: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* INPUTS */
+input, select {
+  display: block;
+  margin: 12px 0;
+  padding: 12px;
+  width: 260px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+}
+
+/* DARK INPUT */
+body.dark input {
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+
+/* LIGHT INPUT */
+body.light input {
+  background: #eee;
+  color: black;
+}
+
+/* BUTTON */
+button {
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(45deg, #00c6ff, #0072ff);
+  color: white;
+}
+
+/* TIMELINE */
+.timeline {
+  border-left: 3px solid #00ff99;
+  padding-left: 15px;
+  margin-top: 25px;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 25px;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -11px;
+  top: 5px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
+/* DARK TIMELINE CARD */
+body.dark .timeline-card {
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+
+/* LIGHT TIMELINE CARD */
+body.light .timeline-card {
+  background: #f1f1f1;
+  color: black;
+}
+
+/* TEXT COLORS FIX */
+body.dark small {
+  color: #ccc;
+}
+
+body.light small {
+  color: #555;
+}
+
+/* LOCATION FIX */
+body.dark .location {
+  color: #ddd;
+}
+
+body.light .location {
+  color: #333;
+}
+/* LOGIN PAGE */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+
+.login-card {
+  width: 350px;
+  padding: 30px;
+  border-radius: 15px;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  text-align: center;
+}
+
+/* LOGO */
+.logo {
+  margin-bottom: 20px;
+}
+
+/* TABS */
+.tabs {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.tabs button {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  color: white;
+  font-weight: bold;
+}
+
+.active-tab {
+  border-bottom: 2px solid #00c6ff;
+  color: #00c6ff;
+}
+
+/* INPUT */
+.login-card input,
+.login-card select {
+  width: 100%;
+}
+
+/* BUTTON */
+.login-card button {
+  width: 100%;
+  margin-top: 15px;
+}
+/* TAB WRAPPER */
+.tab-wrapper {
+  position: relative;
+  display: flex;
+  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+/* BUTTONS */
+.tab-wrapper button {
+  flex: 1;
+  padding: 10px;
+  background: transparent;
+  border: none;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 2;
+}
+
+/* SLIDER */
+.tab-slider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background: linear-gradient(45deg, #00c6ff, #0072ff);
+  border-radius: 10px;
+  transition: 0.3s;
+  z-index: 1;
+}
+
+/* LEFT = LOGIN */
+.tab-slider.left {
+  left: 0;
+}
+
+/* RIGHT = SIGNUP */
+.tab-slider.right {
+  left: 50%;
+}
+.logo {
+  margin-bottom: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
