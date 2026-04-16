@@ -10,8 +10,20 @@ app.use(express.json());
 const contractData = require("./contractDetails.json");
 
 // ================= AUTH =================
-const users = [];
+const fs = require("fs");
+
+let users = [];
 const SECRET = "secret123";
+
+// 🔥 Load users from file
+if (fs.existsSync("users.json")) {
+  users = JSON.parse(fs.readFileSync("users.json"));
+}
+
+// 🔥 Save users
+const saveUsers = () => {
+  fs.writeFileSync("users.json", JSON.stringify(users, null, 2));
+};
 
 // ================= LOGIN =================
 app.post("/login", (req, res) => {
@@ -35,13 +47,18 @@ app.post("/signup", (req, res) => {
   if (exists) return res.status(400).send("User exists ❌");
 
   users.push({ username, password, role });
+
+  saveUsers(); // ✅ IMPORTANT LINE ADDED
+
   res.send("Signup successful ✅");
 });
-
 // ================= BLOCKCHAIN =================
 const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:7545");
 
-const signer = provider.getSigner(0);
+const signer = new ethers.Wallet(
+  "0x6a207bed435e81006443720df940e52211c3c205eed46c87159c62c220811c19",
+  provider
+);
 
 const contract = new ethers.Contract(
   contractData.address,
@@ -118,7 +135,15 @@ app.post("/updateStatus", async (req, res) => {
       "Delivered"
     ];
 
-    // 🟡 If no history → only allow Order Placed
+    // 🔥 Extract all previous statuses
+    const doneStatuses = history.map(h => h.status);
+
+    // ❌ Block if already done ANYTIME before
+    if (doneStatuses.includes(status)) {
+      return res.status(400).send(`${status} already completed ❌`);
+    }
+
+    // 🟡 First step MUST be Order Placed
     if (history.length === 0) {
       if (status !== "Order Placed") {
         return res.status(400).send("First status must be Order Placed ❌");
@@ -126,18 +151,13 @@ app.post("/updateStatus", async (req, res) => {
     } else {
       const lastStatus = history[history.length - 1].status;
 
-      // ❌ Prevent duplicate
-      if (lastStatus === status) {
-        return res.status(400).send(`${status} already updated ❌`);
-      }
-
-      // ❌ Prevent wrong order
       const lastIndex = flow.indexOf(lastStatus);
       const newIndex = flow.indexOf(status);
 
+      // ❌ enforce strict order
       if (newIndex !== lastIndex + 1) {
         return res.status(400).send(
-          `Invalid status flow ❌. Next should be: ${flow[lastIndex + 1]}`
+          `Next step must be: ${flow[lastIndex + 1]} ❌`
         );
       }
     }
@@ -148,14 +168,26 @@ app.post("/updateStatus", async (req, res) => {
     res.send("Status updated ✅");
 
   } catch (err) {
-    console.log(err);
-    res.status(500).send("Error updating status");
+    console.log("UPDATE ERROR:", err);
+    res.status(500).send("Error updating status ❌");
   }
 });
 // ================= TRACK =================
 app.get("/track/:id", async (req, res) => {
   try {
-    const history = await contract.getHistory(req.params.id);
+    const id = req.params.id;
+
+    const existing = await contract.medicines(id);
+
+    if (!existing.id || existing.id === "") {
+      return res.status(400).send("Medicine not found ❌");
+    }
+
+    const history = await contract.getHistory(id);
+
+    if (!history || history.length === 0) {
+      return res.json([]); // 👈 no error
+    }
 
     const formatted = history.map(h => ({
       status: h.status,
@@ -164,28 +196,10 @@ app.get("/track/:id", async (req, res) => {
     }));
 
     res.json(formatted);
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Error fetching history");
-  }
-});
 
-app.get("/track/:id", async (req, res) => {
-  try {
-    console.log("Tracking ID:", req.params.id);
-
-    const history = await contract.getHistory(req.params.id);
-
-    const formatted = history.map(h => ({
-      status: h.status,
-      location: h.location,
-      timestamp: Number(h.timestamp),
-    }));
-
-    res.json(formatted);
   } catch (err) {
     console.log("TRACK ERROR:", err);
-    res.status(500).send("Error fetching history");
+    res.status(500).send("Error fetching history ❌");
   }
 });
 
