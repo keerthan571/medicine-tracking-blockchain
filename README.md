@@ -20,7 +20,7 @@ This system ensures **secure, transparent, and tamper-proof tracking** of medici
 
 ## 🎯 Workflow
 
-1. **Admin** adds a medicine
+1. **Admin** adds a medicine,load all medicines
 2. **Distributor** updates status in correct order:
 
    ```
@@ -86,10 +86,8 @@ http://127.0.0.1:7545
 
 ### 🔗 2. Deploy Smart Contract
 
-```bash
-cd blockchain
-npx hardhat run scripts/deploy.js --network localhost
-```
+Use Remix IDE,compile and run medicinetracking.sol
+Deploy the contracts
 
 👉 Copy deployed contract address
 👉 Update it in:
@@ -132,7 +130,7 @@ npm start
 ## 📸 Example Tracking Flow
 
 ```
-🏭 Order Placed      → Factory
+🏭 Order Placed      → Customer
 📦 Packed            → Distributor
 🚚 Shipped           → Logistics Hub
 🛵 Out for Delivery  → Local Center
@@ -153,9 +151,9 @@ npm start
 
 ## 👨‍💻 Author
 
-**Keerthan Poojari**
-**Nagaraj Shenoy S**
-**Madhan Gowda M B**
+**Keerthan Poojari,**
+**Nagaraj Shenoy S,**
+**Madhan Gowda M B,**
 **Mahesha**
 
 ---
